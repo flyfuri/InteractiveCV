@@ -81,7 +81,7 @@ class GUI:
   def print_row(self, values, colwidths):
     line = []
     for i in range(len(colwidths)):
-        line.append(str(values[i]).center(colwidths[i]))
+      line.append(str(values[i]).center(colwidths[i]))
     print(self.vline + self.vline.join(line) + self.vline) 
     
     
@@ -100,14 +100,16 @@ class GUI:
   def print_emptyscreen(self):
     print("\n" * 20)
     
-  def print_help(self, small=True):
-    if small == False:
+  def print_help(self, big=False):
+    if big:
+      print("********************************************************************************")
+      print("use full screen mode\n")
       print("<----If needed, please move splitter bar to the left to accommodate table!\n")
-      print("Sometimes the online compiler seem to have a timeout, just start again with run")
-      
-    print("Enter column and row for the cell after which you would like to filter:)")
+      print("Sometimes the online compiler seem to have a timeout, just start again with run\n")
+    print("Enter column and row for the cell after which you would like to filter:")
     print("Example: enter first \"g7\" and then \"2\" to get all entries with python skills")
-
+    if big:
+      print("********************************************************************************")
     
 ##############################################
 # this would be the main file
@@ -125,7 +127,7 @@ db = DatabaseObject(conn)
 tblprinter = GUI()
 
 print("initializing simulated database..\n")
-tblprinter.print_help(small=False)
+tblprinter.print_help(big=True)
 sleep(2) #make it look more dramatic ;)
 
 # Insert data into the table
@@ -144,7 +146,7 @@ while True:
       break
   elif inpt.lower() == "?":
       tblprinter.print_emptyscreen()
-      tblprinter.print_help(small=False)
+      tblprinter.print_help(big=True)
       tblprinter.print_emptyscreen()
   elif inpt[:1:].lower() in alphabet[:(len(records[0])):] and inpt[1:3:] in [str(i) for i in range(1,len(records))]:
     wherecol = whereval = ""
