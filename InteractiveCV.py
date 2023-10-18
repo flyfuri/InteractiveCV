@@ -4,7 +4,7 @@
 import DB_sqlite
 import tkinterGUI
 
-alphabet = tuple(map(chr, range(97, 123)))
+tableName = "Workhistory"
 
 # Create a connection to the in-memory database 
 conn = DB_sqlite.sqlite3.connect(':memory:')
@@ -18,37 +18,38 @@ tblprinter = tkinterGUI.GUI()
 #tblprinter.print_help(small=False)
 
 # Insert data into the table
-db.insert_data_into_list("Periods", DB_sqlite.dtlist_period)
+db.insert_data_into_list(tableName, DB_sqlite.dtlist_period)
 
 exitApp = False
+answer = [0, 0]
+#read and display original table
+records = db.readDB_Select(tableName)
 while exitApp == False:
-  #read and display original table
-  allrecords = db.readDB_Select("Periods")
-  
-  answer = tblprinter.printTable(allrecords)
-  if answer == [0,0]:
+  if answer == [0, 0]:
+    #read and display original table
+    records = db.readDB_Select(tableName)
+    answer = tblprinter.printTable(records)
+  elif answer == [-1,-1]:
     exitApp = True
-  else:
-    whereval = allrecords[answer[0]][answer[1]]
+  else:  
+    wherecol = str(records[0][answer[0]])
+    whereval = str(records[answer[1]][answer[0]])
     if whereval.find(",") > -1: #if several items in column, ask which one
       options = [a.strip() for a in whereval.split(",")]
-      #inpt = 
-      #if int(inpt) in range(1,len(options)+1):
-        #search_string = options[int(inpt) - 1]  
-        #     
-      search_string = whereval.split(",")[0].strip()
-      wherecol = str(allrecords[0][answer[1]])
-      records = db.readDB_Select("Periods", wherecond=f"{wherecol} LIKE ('%{search_string}%')") # replacement not working yet: LIKE ('%' || ? || '%')      
+      options.insert(0,"choose one of those:")
+      optrows = [' ' for option in options]
+      opttable =[tuple(optrows), tuple(options)]
+      #ask filteroptions:
+      answer = tblprinter.printTable(opttable, withoutFirstCol=False)
+      search_string = options[answer[0]]
+      records = db.readDB_Select(tableName, wherecond=f"{wherecol} LIKE ('%{search_string}%')") # replacement not working yet: LIKE ('%' || ? || '%')      
     else:
-      records = db.readDB_Select("Periods", wherecond=f"{wherecol} = \'{whereval}\'")      
+      records = db.readDB_Select(tableName, wherecond=f"{wherecol} = \'{whereval}\'")      
     if records != None:
-      tblprinter.printTable(records)
+      answer = tblprinter.printTable(records)
           
       #tblprinter.showMessage("something went wrong... press enter")
          
-          
-       
-  
     
 # normal exit
 del db

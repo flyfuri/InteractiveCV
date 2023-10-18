@@ -34,9 +34,9 @@ class DatabaseObject:
             
     except Exception as e:
       print("problem writing database:" + e)
-   
-    
-  def readDB_Select(self, table_name, cols="*", wherecond="", tpl_searchstr="", sortcond=""):  
+  
+  #def readDB_Select(self, table_name, cols="*", wherecond="", tpl_searchstr="", sortcond=""):
+  def readDB_Select(self, table_name, cols="*", wherecond="", sortcond=""):
     records = None
     query = "SELECT " + cols + " FROM " + table_name
     if wherecond != "":
@@ -44,10 +44,10 @@ class DatabaseObject:
     if sortcond != "":
       query = query + " ORDER BY " + sortcond
     try:
-      if tpl_searchstr=="":
-        self.cursor.execute(query)
-      else:
-        cursor.execute(query, tpl_searchstr)
+      #if tpl_searchstr=="":
+      self.cursor.execute(query)
+      #else:
+      #  cursor.execute(query, tpl_searchstr)
       records = self.cursor.fetchall()
       if cols == "*":
         query = f"PRAGMA table_info({table_name})" 
@@ -60,9 +60,10 @@ class DatabaseObject:
       pass #print(" read OK")
     finally:
       return records
-      
+    
+  
         
   def __del__(self):
-    conn.close()
+    self.conn.close()
     print("data base disconnected..")
     
