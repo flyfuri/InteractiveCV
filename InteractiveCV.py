@@ -18,6 +18,20 @@ paramDictdefault = {
       "ascdesc": "ASC",
 }
 
+def add_ascdes_to_header(records, paramDictionary):  #add [ASC]  or [DESC] to sorted header for GUI
+  tmprecords = copy.deepcopy(records)
+  sortcol = paramDictionary.get("sortcol", "")
+  if sortcol != "":
+    headerrow = list(tmprecords[0])
+    try:
+      headcol =  headerrow.index(sortcol)
+    except:
+      headcol = -1 # to behave like find on string when nothing found
+    if headcol > -1:
+       headerrow[headcol] += (" [" + paramDictionary.get("ascdesc", "ASC") + "]" )
+       tmprecords[0] = tuple(headerrow)
+  return tmprecords
+
 paramDictWork = copy.deepcopy(paramDictdefault)
 
 # Create a connection to the in-memory database 
@@ -40,14 +54,25 @@ try:
   records = db.readDB_Select_parmAsDict(paramDictWork)
   #records = db.readDB_Select(tableName)
   while exitApp == False:
-    if answer == [0, 0]:
+    if answer == [0, 0]:  #reset filter button has been pressed
       #read and display original table
       paramDictWork = copy.deepcopy(paramDictdefault)
       records = db.readDB_Select_parmAsDict(paramDictWork)
-      answer = tblprinter.printTable(records)
+      answer = tblprinter.printTable(add_ascdes_to_header(records, paramDictWork))
     elif answer == [-1,-1]:
       exitApp = True
-    else:  
+    elif answer[1] == 0:  #sort button (header row) has been pressed
+        if paramDictWork["sortcol"] != records[0][answer[0]]:
+          paramDictWork["sortcol"] = records[0][answer[0]]
+        else:
+          if paramDictWork["ascdesc"] == "ASC":
+            paramDictWork["ascdesc"] = "DESC"
+          else:
+            paramDictWork["ascdesc"] = "ASC"
+            
+        records = db.readDB_Select_parmAsDict(paramDictWork)
+        answer = tblprinter.printTable(add_ascdes_to_header(records, paramDictWork))
+    else:  # any other cell button to filter has been pressed
       wherecol = str(records[0][answer[0]])
       whereval = str(records[answer[1]][answer[0]])
       if whereval.find(",") > -1: #if several items in column, ask which one
@@ -64,7 +89,7 @@ try:
         paramDictWork["wherecond"]=f"{wherecol} = \'{whereval}\'"
         records = db.readDB_Select_parmAsDict(paramDictWork)      
       if records != None:
-        answer = tblprinter.printTable(records)
+        answer = tblprinter.printTable(add_ascdes_to_header(records, paramDictWork))
 except Exception as e:        
       tblprinter.showError("Error", str(e))
 finally:    

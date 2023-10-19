@@ -25,10 +25,9 @@ class GUI:
         self._rootW.geometry(winSizestr)
 
     def _callback_tablebutton(self, x, y):
-        if x >= self._colsToSkip:
-            self._returnvalue = [x+self._colsToSkip,y]
-            self._frm.destroy()
-            self._frm.quit()
+        self._returnvalue = [x+self._colsToSkip,y]
+        self._frm.destroy()
+        self._frm.quit()
 
     def _callback_resfilt(self):
         self._returnvalue = [0,0]
@@ -40,7 +39,7 @@ class GUI:
         self._rootW.destroy()
    
     def printTable(self, tablerecords, withoutFirstCol=True): 
-        self._returnvalue = [0,0]
+        self._returnvalue = [-1,-1]
         px, py = 0, 0
         applyMin = lambda x: x if x > 15 else 15
         col_wds = [max([len(str(row[i])) +2 for row in tablerecords]) for i in range(len(tablerecords[1]))]
