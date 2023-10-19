@@ -35,8 +35,8 @@ class GUI:
         self._frm.quit()
 
     def _callback_quit(self):
+        self._returnvalue = [-1,-1]
         self._rootW.destroy()
-        exit()
    
     def printTable(self, tablerecords, withoutFirstCol=True): 
         self._returnvalue = [0,0]

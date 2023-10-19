@@ -67,6 +67,8 @@ try:
         answer = tblprinter.printTable(records)
 except Exception as e:        
       tblprinter.showError("Error", str(e))
+finally:    
+  exit()     
     
 # normal exit
 del db
