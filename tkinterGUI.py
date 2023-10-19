@@ -3,6 +3,7 @@
 
 import os
 import tkinter as tk
+import tkinter.messagebox as tkmsgbox
 from functools import partial
 
 class GUI:
@@ -61,6 +62,6 @@ class GUI:
         return self._returnvalue
   
   
-    def showMessage(self, message):
-        return self._RootW.messagebox(message)
+    def showError(self, title, message):
+        return tkmsgbox.showerror(title=title, message=message)
   
