@@ -82,12 +82,11 @@ try:
         opttable =[tuple(optrows), tuple(options)]
         #ask filteroptions:
         answer = tblprinter.printTable(opttable, withoutFirstCol=False)
-        search_string = options[answer[0]]
-        paramDictWork["wherecond"]=f"{wherecol} LIKE ('%{search_string}%')"
-        records = db.readDB_Select_parmAsDict(paramDictWork)       
+        search_string = options[answer[0]]      
       else:
-        paramDictWork["wherecond"]=f"{wherecol} = \'{whereval}\'"
-        records = db.readDB_Select_parmAsDict(paramDictWork)      
+        search_string = whereval
+      paramDictWork["wherecond"]=f"{wherecol} LIKE ('%{search_string}%')"
+      records = db.readDB_Select_parmAsDict(paramDictWork)       
       if records != None:
         answer = tblprinter.printTable(add_ascdes_to_header(records, paramDictWork))
 except Exception as e:        
