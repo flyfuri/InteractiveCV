@@ -14,6 +14,9 @@ dtlist_period = [("id[INTEGER PRIMARY KEY]", "Begin[DATE NOT NULL]", "End[DATE  
 
 import sqlite3
 
+class Exception_DB_Error(Exception):
+    pass
+
 class DatabaseObject:
   def __init__(self, connection):
     self.conn = connection
@@ -35,19 +38,18 @@ class DatabaseObject:
     except Exception as e:
       print("problem writing database:" + e)
   
-  #def readDB_Select(self, table_name, cols="*", wherecond="", tpl_searchstr="", sortcond=""):
-  def readDB_Select(self, table_name, cols="*", wherecond="", sortcond=""):
+  def readDB_Select(self, table_name, cols="*", wherecond="", sortcol="" , ascdesc="ASC"):
     records = None
     query = "SELECT " + cols + " FROM " + table_name
     if wherecond != "":
       query = query + " WHERE " + wherecond
-    if sortcond != "":
-      query = query + " ORDER BY " + sortcond
+    if sortcol != "":
+      if ascdesc != "ASC":
+        ascdesc = "DESC"
+      query = query + " ORDER BY " + sortcol + " " + ascdesc
+      
     try:
-      #if tpl_searchstr=="":
       self.cursor.execute(query)
-      #else:
-      #  cursor.execute(query, tpl_searchstr)
       records = self.cursor.fetchall()
       if cols == "*":
         query = f"PRAGMA table_info({table_name})" 
@@ -55,15 +57,20 @@ class DatabaseObject:
         headers = tuple([i[1] for i in self.cursor.fetchall()])
         records.insert(0,headers)
     except Exception as e:
-      pass #print("problem reading from database:" + e)
+      raise Exception_DB_Error("DB_ERROR: problem while r/w to/from database:" + str(e))
     else:
-      pass #print(" read OK")
-    finally:
       return records
     
-  
+
+  def readDB_Select_parmAsDict(self, paramDictionary):
+    records = None
+    return self.readDB_Select(table_name=paramDictionary.get("tablename", ""), 
+                       cols=paramDictionary.get("col", "*"), 
+                       wherecond=paramDictionary.get("wherecond", ""),
+                       sortcol=paramDictionary.get("sortcol", ""),
+                       ascdesc=paramDictionary.get("ascdesc", "ASC"))
         
   def __del__(self):
     self.conn.close()
-    print("data base disconnected..")
+    #print("data base disconnected..")
     
