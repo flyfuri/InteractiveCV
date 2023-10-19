@@ -81,7 +81,7 @@ try:
         optrows = [' ' for option in options]
         opttable =[tuple(optrows), tuple(options)]
         #ask filteroptions:
-        answer = tblprinter.printTable(opttable, withoutFirstCol=False)
+        answer = tblprinter.printTable(opttable, colsInvisibleFromLeft=0, colsInactiveFromLeft=1)
         search_string = options[answer[0]]      
       else:
         search_string = whereval
@@ -98,4 +98,4 @@ finally:
 del db
 del tblprinter
 #print("\n\nThank you for taking time to watch my interactive CV! Looking forward to hear from you...")
-##############################################
+############################################## 

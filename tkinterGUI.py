@@ -11,6 +11,7 @@ class GUI:
     _frm = None #tk.Frame(_rootW,height=600, width=800)
     _returnvalue = [0,0]
     _colsToSkip = 0
+    _colsToIgnore = 0
 
     def __init__(self):
         # Create a Tkinter root window (it won't be displayed)
@@ -27,9 +28,10 @@ class GUI:
         self._rootW.geometry(winSizestr)
 
     def _callback_tablebutton(self, x, y):
-        self._returnvalue = [x+self._colsToSkip,y]
-        self._frm.destroy()
-        self._frm.quit()
+        if x >= self._colsToIgnore:
+            self._returnvalue = [x+self._colsToSkip,y]
+            self._frm.destroy()
+            self._frm.quit()
 
     def _callback_resfilt(self):
         self._returnvalue = [0,0]
@@ -40,7 +42,7 @@ class GUI:
         self._returnvalue = [-1,-1]
         self._rootW.destroy()
    
-    def printTable(self, tablerecords, withoutFirstCol=True): 
+    def printTable(self, tablerecords, colsInvisibleFromLeft=1, colsInactiveFromLeft=0): 
         self._returnvalue = [-1,-1]
         px, py = 0, 0
         applyMin = lambda x: x if x > 15 else 15
@@ -52,7 +54,8 @@ class GUI:
           
         self._frm = tk.Frame(self._rootW, height=600, width=800, background="light blue", padx=10, pady=10 )
         self._frm.grid()
-        self._colsToSkip = 1 if withoutFirstCol else 0
+        self._colsToSkip = colsInvisibleFromLeft
+        self._colsToIgnore = colsInactiveFromLeft
         tk.Label(self._frm, text="To filter, click the corresponding cell.", justify="left", background="light blue").grid(column=1, row=1, columnspan=6, sticky="w")
         tk.Label(self._frm, text="To sort, click the corresponding header cell.", justify="left", background="light blue" ).grid(column=1, row=2, columnspan=6, sticky="w")
         tk.Label(self._frm, text="To change sort order, click header cell off alredy sorted column again.", justify="left", background="light blue" ).grid(column=1, row=3, columnspan=6, sticky="w")
