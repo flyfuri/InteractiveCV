@@ -85,10 +85,11 @@ try:
         search_string = options[answer[0]]      
       else:
         search_string = whereval
-      paramDictWork["wherecond"]=f"{wherecol} LIKE ('%{search_string}%')"
-      records = db.readDB_Select_parmAsDict(paramDictWork)       
-      if records != None:
-        answer = tblprinter.printTable(add_ascdes_to_header(records, paramDictWork))
+      if answer[0]>0 and answer[1]>0:  #in case filter reset or quit has been pressed while asking for filter options
+        paramDictWork["wherecond"]=f"{wherecol} LIKE ('%{search_string}%')"
+        records = db.readDB_Select_parmAsDict(paramDictWork)       
+        if records != None:
+          answer = tblprinter.printTable(add_ascdes_to_header(records, paramDictWork))
 except Exception as e:        
       tblprinter.showError("Error", str(e))
 finally:    
