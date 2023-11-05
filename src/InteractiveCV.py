@@ -5,6 +5,8 @@ import copy
 import DB_sqlite
 import tkinterGUI
 
+print(tkinterGUI.tk.TkVersion)
+
 tableName = "Workhistory"
 
 paramDictdefault = {
